@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 # Local imports
 from .serializers import RoomSerializer, CreateRoomSerializer, JoinRoomSerializer
-from .models import Room, Member
+from .models import Room
 from .permissions import IsHostPermission, IsMemberPermission, IsNotHostPermission
 
 

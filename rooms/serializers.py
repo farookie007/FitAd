@@ -1,6 +1,6 @@
 from rest_framework import serializers
 # Local imports
-from .models import Room, Requests, Member
+from .models import Room, Requests
 
 
 class RoomSerializer(serializers.ModelSerializer):
