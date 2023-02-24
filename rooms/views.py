@@ -75,7 +75,6 @@ class LeaveRoomView(APIView):
         return Response({"Bad Request": "Not a member in this Room."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class ListRoomView(generics.ListAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
