@@ -2,8 +2,8 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 # Local imports
-from .serializers import RoomSerializer, CreateRoomSerializer, JoinRoomSerializer
-from .models import Room
+from .serializers import RoomSerializer, CreateRoomSerializer, JoinRoomSerializer, CreateRequestSerializer, RequestsSerializer, DisplayRoomSerializer
+from .models import Room, Requests
 from .permissions import IsHostPermission, IsMemberPermission, IsNotHostPermission
 
 
@@ -52,10 +52,22 @@ class JoinRoomView(APIView):
         return Response({"Bad Request": "Invalid Parameters. No `code` key found."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DisplayRoomView(generics.RetrieveAPIView):
+class DisplayRoomView(APIView):
     permission_classes = (IsMemberPermission,)
-    serializer_class = RoomSerializer
-    queryset = Room.objects.all()
+    serializer_class = DisplayRoomSerializer
+
+    def get(self, request, format=None):
+        room_code = self.request.session.get("room_code")
+        if room_code is not None:
+            room = Room.objects.filter(code=room_code).first()
+            if room:
+                data = self.serializer_class(room).data
+                data["is_host"] = (room.host == self.request.session.session_key)
+                return Response(data, status=status.HTTP_200_OK)
+            return Response({"Not Found": "This room does not exist or has been closed by the host"}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({"Bad Request": "You don't belong in any room."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class CloseRoomView(generics.DestroyAPIView):
@@ -78,3 +90,50 @@ class LeaveRoomView(APIView):
 class ListRoomView(generics.ListAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
+
+
+class CreateRequestView(APIView):
+    serializer_class = CreateRequestSerializer
+    
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        print("REQUEST DATA: ", request.data)
+        print("SERIALIZER: ", serializer)
+        print(serializer.is_valid())
+        if serializer.is_valid():
+            room_code = self.request.session.get("room_code")
+            room = Room.objects.filter(code=room_code).first()
+            if room:
+                song_title = serializer.data.get("song_title")
+                artiste = serializer.data.get("artiste")
+                req = Requests(
+                    song_title=song_title,
+                    artiste=artiste,
+                    sender_ID=self.request.session.session_key,
+                    room=room
+                )
+                req.save()
+                return Response(RequestsSerializer(req).data, status=status.HTTP_201_CREATED)
+            return Response({"Bad Request": "You don't belong in a Room OR the Room is closed by the host."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"Bad Request": "Invalid data..."}, status=status.HTTP_400_BAD_REQUEST)
+
+class ListRequestView(generics.ListAPIView):
+    queryset = Requests.objects.all()
+    serializer_class = RequestsSerializer
+
+
+class RoomRequestView(APIView):
+    # queryset = Room.objects.all()
+    # serializer_class = RoomRequestSerializer
+    serializer_class = RequestsSerializer
+
+    def get(self, request, format=None):
+        room_code = self.request.session.get("room_code")
+        if room_code is not None:
+            room = Room.objects.filter(code=room_code).first()
+            if room:
+                return Response(
+                    [self.serializer_class(req).data for req in room.user_requests.all()],
+                    status=status.HTTP_200_OK,
+                )
+        return Response({"Bad Request": "You don't belong in a Room OR the Room is closed by the host."}, status=status.HTTP_400_BAD_REQUEST)
