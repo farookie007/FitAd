@@ -12,6 +12,17 @@ class RoomSerializer(serializers.ModelSerializer):
             "host",
             "created_time",
         )
+class DisplayRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = (
+            "id",
+            "code",
+            "host",
+            "created_time",
+            "user_requests",
+        )
+
 
 class CreateRoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,6 +37,18 @@ class JoinRoomSerializer(serializers.ModelSerializer):
         )
 
 class RequestsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Requests
+        fields = (
+            "id",
+            "song_title",
+            "artiste",
+            "sender_ID",
+            "room",
+            "timestamp",
+        )
+
+class CreateRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Requests
         fields = (
