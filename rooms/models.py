@@ -33,6 +33,15 @@ class Room(models.Model):
 
 
 class Requests(models.Model):
+    """A model representing each song request sent by a
+    user."""
+
+    class Meta:
+        ordering = ["-timestamp",]
+        indexes = [
+            models.Index(fields=["-timestamp"]),
+        ]
+
     song_title = models.CharField(max_length=255)
     artiste = models.CharField(max_length=255)
     sender_ID = models.CharField(max_length=255)
@@ -40,3 +49,6 @@ class Requests(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="user_requests")
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        """String representation of the `Request` model."""
+        return f"{self.song_title} - {self.artiste}"
