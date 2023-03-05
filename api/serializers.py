@@ -1,9 +1,10 @@
 from rest_framework import serializers
 # Local imports
-from .models import Room, Requests
+from rooms.models import Room, Request
 
 
 class RoomSerializer(serializers.ModelSerializer):
+    """Model serializer for the `Room` object."""
     class Meta:
         model = Room
         fields = (
@@ -12,7 +13,10 @@ class RoomSerializer(serializers.ModelSerializer):
             "host",
             "created_time",
         )
+
+
 class DisplayRoomSerializer(serializers.ModelSerializer):
+    """Model serializer for displaying the content of a room."""
     class Meta:
         model = Room
         fields = (
@@ -25,20 +29,25 @@ class DisplayRoomSerializer(serializers.ModelSerializer):
 
 
 class CreateRoomSerializer(serializers.ModelSerializer):
+    """Model serializer for creating a `Room` object."""
     class Meta:
         model = Room
         fields = ()
 
+
 class JoinRoomSerializer(serializers.ModelSerializer):
+    """Model serializer for joining a `Room`."""
     class Meta:
         model = Room
         fields = (
             "code",
         )
 
-class RequestsSerializer(serializers.ModelSerializer):
+
+class RequestSerializer(serializers.ModelSerializer):
+    """Model serializer for the `Request` object."""
     class Meta:
-        model = Requests
+        model = Request
         fields = (
             "id",
             "song_title",
@@ -48,9 +57,11 @@ class RequestsSerializer(serializers.ModelSerializer):
             "timestamp",
         )
 
+
 class CreateRequestSerializer(serializers.ModelSerializer):
+    """Model serializer for creating a `Request` object via API call."""
     class Meta:
-        model = Requests
+        model = Request
         fields = (
             "song_title",
             "artiste",

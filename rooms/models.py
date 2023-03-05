@@ -32,7 +32,7 @@ class Room(models.Model):
         return reverse("rooms:display_room", args=[self.pk, self.code])
 
 
-class Requests(models.Model):
+class Request(models.Model):
     """A model representing each song request sent by a
     user."""
 
