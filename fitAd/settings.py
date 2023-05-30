@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     # Local APPs
     "rooms.apps.RoomsConfig",
-    "api.apps.ApiConfig",
+    "apis.apps.ApisConfig",
 ]
 
 MIDDLEWARE = [

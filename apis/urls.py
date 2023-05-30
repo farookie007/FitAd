@@ -10,8 +10,6 @@ app_name = "rooms"
 urlpatterns = [
     path("display/", DisplayRoomView.as_view(), name="display_room"),
     path("close/", CloseRoomView.as_view(), name="leave_room"),
-    # trying to implement the url path below
-    # path("close/", CloseRoomView.as_view(), name="leave_room"),
     path("leave/", LeaveRoomView.as_view(), name="leave_room"),
     path("create/", CreateRoomView.as_view(), name="create_room"),
     path("join/", JoinRoomView.as_view(), name="join_room"),
