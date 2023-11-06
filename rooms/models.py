@@ -1,18 +1,19 @@
 import string
 import random
 from django.db import models
-from django.urls import reverse
+from django.contrib.auth import get_user_model
+
 
 
 def generate_code(length=6):
-    """Generates and returns a code of length `length`
+    """
+    Generates and returns a code of `length` numbers
     which is a mixture of uppercase letters and digits.
-    
-    Args:
-        length(int): the length of the code required.
-        
+    Params:
+        :params length: the length of the code required.
+
     Returns:
-        (str): the code as a string.
+        : the code as a string
     """
     seq = string.ascii_uppercase + string.digits
     while True:
@@ -23,32 +24,8 @@ def generate_code(length=6):
 
 
 class Room(models.Model):
-    """A model representation of a room."""
-    code = models.CharField(max_length=8, default=generate_code, unique=True)
-    host = models.CharField(max_length=255, unique=True)
-    created_time = models.DateTimeField(auto_now_add=True)
-
-    def get_absolute_url(self):
-        return reverse("rooms:display_room", args=[self.pk, self.code])
-
-
-class Request(models.Model):
-    """A model representing each song request sent by a
-    user."""
-
-    class Meta:
-        ordering = ["-timestamp",]
-        indexes = [
-            models.Index(fields=["-timestamp"]),
-        ]
-
-    song_title = models.CharField(max_length=255)
-    artiste = models.CharField(max_length=255)
-    sender_ID = models.CharField(max_length=255)
-    # sender_IP = models.CharField(max_length=255)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="user_requests")
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        """String representation of the `Request` model."""
-        return f"{self.song_title} - {self.artiste}"
+    title = models.CharField(max_length=20, unique=False)
+    code = models.CharField(max_length=10, default=generate_code, unique=True)
+    host = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="room")
+    active = models.BooleanField(default=True)
+    
