@@ -26,6 +26,10 @@ def generate_code(length=6):
 class Room(models.Model):
     title = models.CharField(max_length=20, unique=False)
     code = models.CharField(max_length=10, default=generate_code, unique=True)
-    host = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="room")
-    active = models.BooleanField(default=True)
-    
+    host = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="rooms")
+
+
+class Member(models.Model):
+    username = models.CharField(max_length=20, unique=True)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="members")
+    room_code = models.CharField(max_length=10)
