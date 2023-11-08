@@ -7,7 +7,6 @@ import rooms.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,21 +15,56 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Room',
+            name="Room",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=20)),
-                ('code', models.CharField(default=rooms.models.generate_code, max_length=10, unique=True)),
-                ('host', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=20)),
+                (
+                    "code",
+                    models.CharField(
+                        default=rooms.models.generate_code, max_length=10, unique=True
+                    ),
+                ),
+                (
+                    "host",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rooms",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Member',
+            name="Member",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('username', models.CharField(max_length=20, unique=True)),
-                ('room_code', models.CharField(max_length=10)),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='members', to='rooms.room')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("username", models.CharField(max_length=20, unique=True)),
+                ("room_code", models.CharField(max_length=10)),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="members",
+                        to="rooms.room",
+                    ),
+                ),
             ],
         ),
     ]
