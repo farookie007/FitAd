@@ -33,6 +33,8 @@ class Room(models.Model):
 
 class Member(models.Model):
     username = models.CharField(max_length=20, unique=False)
-    session = models.OneToOneField(Session, on_delete=models.CASCADE, related_name="member")
+    session = models.OneToOneField(
+        Session, on_delete=models.CASCADE, related_name="member"
+    )
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="members")
     room_code = models.CharField(max_length=10)

@@ -53,7 +53,11 @@ class MemberDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MemberSerializer
 
     def perform_update(self, serializer):
-        return serializer.save(room=Room.objects.filter(code=serializer.validated_data["room_code"]).first())
+        return serializer.save(
+            room=Room.objects.filter(
+                code=serializer.validated_data["room_code"]
+            ).first()
+        )
 
 
 class MemberList(generics.ListCreateAPIView):
@@ -78,13 +82,7 @@ class MemberList(generics.ListCreateAPIView):
         if not request.session.session_key:
             request.session.create()
         session = Session.objects.get(pk=request.session.session_key)
-        # check if the session already belong to a member
-        # try assigning the room and session to the serializer
-        try:
-            self.perform_create(serializer, room, session)
-        except IntegrityError:
-            return Response(data={"message": f"You already belong in a room - {room.code}","room_url": reverse("room-detail", [room.pk], request=request, format=None)},
-                            status=status.HTTP_403_FORBIDDEN)
+        self.perform_create(serializer, room, session)
         headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers

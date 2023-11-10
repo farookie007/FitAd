@@ -1,6 +1,7 @@
 from django.contrib.sessions.models import Session
 from rest_framework import permissions
 
+
 class MemberPermisssion(permissions.BasePermission):
     def has_permission(self, request, view):
         # only users that does not belong in an active room - CREATE
