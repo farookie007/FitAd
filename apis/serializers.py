@@ -27,8 +27,9 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
 
 class MemberSerializer(serializers.HyperlinkedModelSerializer):
     room = serializers.HyperlinkedRelatedField(view_name="room-detail", read_only=True)
-    room_code = serializers.CharField(max_length=10, write_only=True)
+    room_code = serializers.CharField(max_length=10)
 
     class Meta:
         model = Member
-        fields = ("url", "id", "username", "room", "room_code")
+        fields = ("url", "id", "username", "room", "room_code", "session_id")
+        read_only_fields = ("room", "session_id")
