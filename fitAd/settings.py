@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-vaq(atohu+3x_30hp@n7mz27hyxekurll$+(fw^753_%3h7(tf"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", default="False") == "True"
 
 ALLOWED_HOSTS = []
 
@@ -38,8 +43,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # 3rd party appa
+    "corsheaders",
     "rest_framework",
     "django_extensions",
+    "drf_spectacular",
     # local apps
     "accounts.apps.AccountsConfig",
     "apis.apps.ApisConfig",
@@ -49,6 +56,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # CORS Middleware
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -131,3 +140,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # settings default user model
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+# Rest framework config
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# CORS settings
+CORS_ORIGIN_WHITELIST = [
+    "https://127.0.0.1:3000",
+    "https://127.0.0.1:8000",
+]
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    "https://127.0.0.1:3000",
+]
+
+# Spectacular settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "FitAd",
+    "DESCRIPTION": "An API for requesting music at a party",
+    "VERSION": "1.0.0",
+}
